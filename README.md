@@ -1,1 +1,2 @@
-# taobao_crawled
+# 淘宝爬虫，抓取淘宝指定关键字商品列表以及评论信息
+### 保存到数据库mongodb 和 mysql
