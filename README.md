@@ -1,7 +1,7 @@
 # 淘宝爬虫
- 利用selenium抓取淘宝商品列表
- 利用requests抓取商品评论
- 将保存数据到mysql和mongodb
+###### 利用selenium抓取淘宝商品列表
+###### 利用requests抓取商品评论
+###### 将保存数据到mysql和mongodb
 
 
 #### 抓取商品的关键字
