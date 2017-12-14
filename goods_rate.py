@@ -62,7 +62,7 @@ def get_page(itemid,sellerid):
 
 def main():
     goods = allgoods[i]
-    print(i,len(goods))
+    print(i,len(allgoods))
     crawl_rank(goods['itemid'],goods['sellerid'])
 
 if __name__ == "__main__":
