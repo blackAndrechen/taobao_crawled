@@ -1,6 +1,7 @@
 import requests
 import json
 import pymongo
+from multiprocessing.dumpy import Pool
 
 #连接数据库，获取itemid和sellerid
 client = pymongo.MongoClient('localhost',27017)
@@ -33,7 +34,8 @@ def crawl_rank(itemid,sellerid):
                 goodsrate = {'date':item['rateDate'],
                              'sku':item['auctionSku'],
                              'usernick':item['displayUserNick'],
-                             'content':item['rateContent']}
+                             'content':item['rateContent'],
+                             'itemid':itemid}
                 save_to_mongo(goodsrate)
         except:
             continue
@@ -59,9 +61,12 @@ def get_page(itemid,sellerid):
         return get_page(itemid,sellerid)
 
 def main():
-    for i in range(len(allgoods)):
-        goods = allgoods[i]
-        crawl_rank(goods['itemid'],goods['sellerid'])
+    goods = allgoods[i]
+    print(i,len(goods))
+    crawl_rank(goods['itemid'],goods['sellerid'])
 
 if __name__ == "__main__":
-    main()
+    pool = Pool()
+    pool.map(main,[i for i in range(len(allgoods))])
+    
+    
