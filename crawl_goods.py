@@ -13,12 +13,12 @@ goods = '口红'
 mysqlDB = 'tb'
 mongoDB = 'tb_kouhon'
 mongotable = 'goods_info'
-
+mysqlpassword = ''
 
 conn = pymysql.connect(host='localhost',
                        port=3306,
                        user='root',
-                       password='',
+                       password=mysqlpassword,
                        db=mysqlDB,
                        charset='utf8mb4')
 cursor = conn.cursor()
