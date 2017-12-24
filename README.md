@@ -36,14 +36,30 @@
 ![](https://github.com/blackAndrechen/taobao_crawled/blob/master/picture/1.PNG)
 
 
+
 #### 参数解释
 * -h 帮助
 * -k 需要爬取的商品名称
 * -d 需要保存到的数据库名称（保存到mongodb,程序自动建立数据库）
+* -r 是否需要抓取商品评论
 * -v 版本信息
 
+
 ### 示例
+##### 抓取商品列表
+
 ![](https://github.com/blackAndrechen/taobao_crawled/blob/master/picture/2.PNG)
 
+##### 抓取商品评论
+
+此功能需要先抓取商品列表
+![](https://github.com/blackAndrechen/taobao_crawled/blob/master/picture/4.PNG)
+
 ### 抓取到的数据库信息
+商品信息
+
 ![](https://github.com/blackAndrechen/taobao_crawled/blob/master/picture/3.PNG)
+
+评论信息
+
+![](https://github.com/blackAndrechen/taobao_crawled/blob/master/picture/5.PNG)
