@@ -1,8 +1,4 @@
 # 淘宝爬虫
-###### 利用selenium抓取淘宝商品列表
-###### 利用requests抓取商品评论
-###### 将保存数据到mysql和mongodb
-
 
 #### 抓取商品的关键字
 * 商品的id
@@ -38,14 +34,16 @@
 ### 使用方法
 将文件下载到本地，cmd进入该文件夹
 ![](https://github.com/blackAndrechen/taobao_crawled/blob/master/picture/1.PNG)
-参数解释
+
+
+#### 参数解释
 * -h 帮助
 * -k 需要爬取的商品名称
 * -d 需要保存到的数据库名称（保存到mongodb,程序自动建立数据库）
 * -v 版本信息
 
 ### 示例
-![](picture\2.png)
+![](https://github.com/blackAndrechen/taobao_crawled/blob/master/picture/2.PNG)
 
-### 数据库信息
-![](picture\3.png)
+### 抓取到的数据库信息
+![](https://github.com/blackAndrechen/taobao_crawled/blob/master/picture/3.PNG)
