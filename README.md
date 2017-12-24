@@ -37,7 +37,7 @@
 
 ### 使用方法
 将文件下载到本地，cmd进入该文件夹
-![](picture/1.png)
+![](picture\1.png)
 参数解释
 * -h 帮助
 * -k 需要爬取的商品名称
@@ -45,7 +45,7 @@
 * -v 版本信息
 
 ### 示例
-![](picture/2.png)
+![](picture\2.png)
 
 ### 数据库信息
-![](picture/3.png)
+![](picture\3.png)
