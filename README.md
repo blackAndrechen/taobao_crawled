@@ -37,7 +37,7 @@
 
 ### 使用方法
 将文件下载到本地，cmd进入该文件夹
-![](picture\1.png)
+![](https://github.com/blackAndrechen/taobao_crawled/blob/master/picture/1.PNG)
 参数解释
 * -h 帮助
 * -k 需要爬取的商品名称
