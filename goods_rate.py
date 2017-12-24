@@ -1,12 +1,13 @@
 import requests
 import json
 import pymongo
-from multiprocessing.dumpy import Pool
+from multiprocessing import Pool
 
 #连接数据库，获取itemid和sellerid
 client = pymongo.MongoClient('localhost',27017)
-dataname = client['tb_kouhon']
-table = dataname['goods_info']
+dataname = client['maozi']
+table = dataname['maozitable']
+
 allgoods = []
 for i in table.find({}):
     goodsdic = {'itemid':i['itemid'],
@@ -14,7 +15,7 @@ for i in table.find({}):
     allgoods.append(goodsdic)
 
 #将评论数据保存到table2
-table2 = dataname['goods_ratelist']
+table2 = dataname['maozirank']
 
 def crawl_rank(itemid,sellerid):
     url = 'https://rate.tmall.com/list_detail_rate.htm?itemId={}&sellerId={}&currentPage={}'
@@ -60,7 +61,7 @@ def get_page(itemid,sellerid):
     except:
         return get_page(itemid,sellerid)
 
-def main():
+def main(i):
     goods = allgoods[i]
     print(i,len(allgoods))
     crawl_rank(goods['itemid'],goods['sellerid'])
@@ -68,5 +69,4 @@ def main():
 if __name__ == "__main__":
     pool = Pool()
     pool.map(main,[i for i in range(len(allgoods))])
-    
-    
+

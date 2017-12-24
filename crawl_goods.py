@@ -7,6 +7,10 @@ from selenium.webdriver.support import expected_conditions as EC
 import pymongo
 import argparse
 import re
+import requests
+import json
+import pymongo
+from multiprocessing.dummy import Pool
 
 __version__ = "0.2.0"
 
@@ -15,6 +19,7 @@ def get_parser():
     parser = argparse.ArgumentParser(description='search name databasename weatherrank')
     parser.add_argument('-k','--keyword',type=str,help='you need search taobao goods name')
     parser.add_argument('-d','--database',type=str,help='saved to database name')
+    parser.add_argument('-r','--rank',type=str,help='whether open func crawl rank')
     parser.add_argument('-v','--version',action='store_true',help='displays the current version of taobao_crawl')
     return parser
 
@@ -27,7 +32,8 @@ def command_line_parser():
         return
     if not args['keyword']:
         parser.print_help()
-    else:
+    #爬取淘宝商品
+    if args['keyword']:
         #获得要搜索的淘宝商品名字
         goods = args['keyword']
         #保存到数据库的名字
@@ -37,13 +43,38 @@ def command_line_parser():
         client = pymongo.MongoClient('localhost', 27017)
         dataname = client[mongoDB]
         global table
+        #table保存商品
         table = dataname[mongotable]
-        #启动爬虫
+        #启动商品爬虫
         sumpage = search(goods)
         sumpage = int(re.compile('(\d+)').search(sumpage).group(1))  # 利用正则表达式提取数字，并强制转换为int类型
         for i in range(2, sumpage + 1):
             next_page(i)
         browser.close()
+    #爬取商品评论信息
+    if args['rank']:
+        mongoDB = args['database']
+        mongotable = mongoDB + 'rank'
+        client = pymongo.MongoClient('localhost', 27017)
+        dataname = client[mongoDB]
+        global table2,allgoods
+        # 读取table中商品信息(itemid,sellid),table2保存评论信息
+        table = dataname[args['database']+'table']
+        table2 = dataname[mongoDB + 'rank']
+        allgoods = []
+        for i in table.find({}):
+            goodsdic = {'itemid': i['itemid'],
+                        'sellerid': i['sellerid']}
+            allgoods.append(goodsdic)
+
+        def main(i):
+            goods = allgoods[i]
+            print('crawl progress {}/{}--->'.format(i, len(allgoods)))
+            crawl_rank(goods['itemid'], goods['sellerid'])
+
+        if __name__ == "__main__":
+            pool = Pool()
+            pool.map(main, [i for i in range(len(allgoods))])
 
 #模拟搜索
 def search(goods):
@@ -119,7 +150,54 @@ def save_to_mongoDB(page_number,product):
     except Exception:
         print('save {} page failed'.format(page_number), product)
 
+
+def crawl_rank(itemid, sellerid):
+    url = 'https://rate.tmall.com/list_detail_rate.htm?itemId={}&sellerId={}&currentPage={}'
+    # 获得商品评论最大页数
+    maxpage = get_page(itemid, sellerid)
+    for page in range(1, maxpage + 1):
+        try:
+            header = {
+                'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.91 Safari/537.36'}
+            response = requests.get(url.format(itemid, sellerid, page), headers=header)
+            html = response.text
+            # 将html最前面的几个字符去掉，返回字典型数据
+            formaljson = html[15:]
+            jsondata = json.loads(formaljson)
+            items = jsondata['rateList']
+            # 遍历items，保存到mongodb
+            for item in items:
+                goodsrate = {'date': item['rateDate'],
+                             'sku': item['auctionSku'],
+                             'usernick': item['displayUserNick'],
+                             'content': item['rateContent'],
+                             'itemid': itemid}
+                save_to_mongo(goodsrate)
+        except:
+            continue
+
+def save_to_mongo(goodsrate):
+    try:
+        if table2.insert(goodsrate):
+            print('saved MongoDB --->', goodsrate['content'])
+    except Exception:
+        print('save MongoDB failed', goodsrate['itemid'])
+
+def get_page(itemid, sellerid):
+    try:
+        url = 'https://rate.tmall.com/list_detail_rate.htm?itemId={}&sellerId={}&currentPage={}'
+        header = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/61.0.3163.91 Safari/537.36'}
+        response = requests.get(url.format(itemid, sellerid, 0), headers=header)
+        html = response.text
+        formaljson = html[15:]
+        jsondata = json.loads(formaljson)
+        return jsondata['paginator']['lastPage']
+    except:
+        return get_page(itemid, sellerid)
+
 if __name__ == '__main__':
     command_line_parser()
+
 
 
