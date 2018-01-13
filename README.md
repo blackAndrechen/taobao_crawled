@@ -41,7 +41,7 @@
 * -h 帮助
 * -k 需要爬取的商品名称
 * -d 需要保存到的数据库名称（保存到mongodb,程序自动建立数据库）
-* -r 是否需要抓取商品评论
+* -r 是否需要抓取商品评论 （输入任意字符表示抓取评论 例如：python crawl_taobao.py -d database -r a）
 * -v 版本信息
 
 
@@ -65,4 +65,9 @@
 ![](https://github.com/blackAndrechen/taobao_crawled/blob/master/picture/5.PNG)
 
 ## 2018.1.13更新
+
+
 #### 简化代码，将chrome浏览器改为phantomjs无头浏览器
+
+
+评论的网页稍有变动，修改代码使其可执行
