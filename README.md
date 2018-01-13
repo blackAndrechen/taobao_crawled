@@ -63,3 +63,6 @@
 评论信息
 
 ![](https://github.com/blackAndrechen/taobao_crawled/blob/master/picture/5.PNG)
+
+## 2018.1.13更新
+#### 简化代码，将chrome浏览器改为phantomjs无头浏览器
